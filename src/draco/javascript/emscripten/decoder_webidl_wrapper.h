@@ -23,6 +23,7 @@
 #include "draco/compression/decode.h"
 #include "draco/core/decoder_buffer.h"
 #include "draco/mesh/mesh.h"
+#include "draco/io/obj_decoder.h"
 
 typedef draco::AttributeTransformType draco_AttributeTransformType;
 typedef draco::GeometryAttribute draco_GeometryAttribute;
@@ -245,6 +246,20 @@ class Decoder {
 
   draco::Decoder decoder_;
   draco::Status last_status_;
+};
+
+class ObjDecoder {
+public:
+    ObjDecoder() {}
+
+    const draco::Status *DecodeMeshFromBuffer(draco::DecoderBuffer *buffer, draco::Mesh *out_mesh);
+    const draco::Status *DecodePointCloudFromBuffer(draco::DecoderBuffer *buffer, draco::PointCloud *out_point_cloud);
+
+    void set_deduplicate_input_values(bool v) { decoder_.set_deduplicate_input_values(v); }
+    void set_use_metadata(bool flag) { decoder_.set_use_metadata(flag); }
+private:
+    draco::ObjDecoder decoder_;
+    draco::Status last_status_;
 };
 
 #endif  // DRACO_JAVASCRIPT_EMSCRITPEN_DECODER_WEBIDL_WRAPPER_H_

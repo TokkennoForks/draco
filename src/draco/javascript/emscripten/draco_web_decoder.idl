@@ -236,3 +236,11 @@ interface Decoder {
 
   void SkipAttributeTransform(draco_GeometryAttribute_Type att_type);
 };
+
+interface ObjDecoder {
+  void ObjDecoder();
+  [Const] Status DecodeMeshFromBuffer(DecoderBuffer buffer, Mesh out_mesh);
+  [Const] Status DecodePointCloudFromBuffer(DecoderBuffer buffer, PointCloud out_point_cloud);
+  void set_deduplicate_input_values(boolean v);
+  void set_use_metadata(boolean flag);
+};
