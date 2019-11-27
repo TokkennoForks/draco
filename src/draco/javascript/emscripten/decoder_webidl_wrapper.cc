@@ -248,13 +248,3 @@ const Metadata *Decoder::GetAttributeMetadata(const PointCloud &pc,
                                               long att_id) const {
   return pc.GetAttributeMetadataByAttributeId(att_id);
 }
-
-const draco::Status *ObjDecoder::DecodeMeshFromBuffer(draco::DecoderBuffer *in_buffer, draco::Mesh *out_mesh) {
-    last_status_ = decoder_.DecodeFromBuffer(in_buffer, out_mesh);
-    return &last_status_;
-}
-
-const draco::Status *ObjDecoder::DecodePointCloudFromBuffer(draco::DecoderBuffer *in_buffer, draco::PointCloud *out_point_cloud) {
-    last_status_ = decoder_.DecodeFromBuffer(in_buffer, out_point_cloud);
-    return &last_status_;
-}
