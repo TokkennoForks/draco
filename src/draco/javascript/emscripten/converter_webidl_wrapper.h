@@ -17,6 +17,7 @@
 
 #include <vector>
 
+#include <emscripten.h>
 #include "draco/attributes/attribute_transform_type.h"
 #include "draco/attributes/point_attribute.h"
 #include "draco/compression/config/compression_shared.h"
@@ -414,6 +415,15 @@ public:
 private:
     draco::ObjDecoder decoder_;
     draco::Status last_status_;
+};
+
+class FileHelper {
+public:
+    FileHelper() {}
+
+    float WriteFile(draco::DecoderBuffer *buffer, const char *filename);
+    float ReadFile(const char *filename, DracoUInt8Array *out_values);
+    bool RemoveFile(const char *filename);
 };
 
 #endif  // DRACO_JAVASCRIPT_EMSCRITPEN_CONVERTER_WEBIDL_WRAPPER_H_

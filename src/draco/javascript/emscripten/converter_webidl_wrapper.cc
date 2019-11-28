@@ -14,6 +14,7 @@
 //
 #include "draco/javascript/emscripten/converter_webidl_wrapper.h"
 
+#include <fstream>
 #include "draco/compression/encode.h"
 #include "draco/mesh/mesh.h"
 
@@ -554,4 +555,42 @@ const draco::Status *ObjDecoder::DecodeMeshFromBuffer(draco::DecoderBuffer *in_b
 const draco::Status *ObjDecoder::DecodePointCloudFromBuffer(draco::DecoderBuffer *in_buffer, draco::PointCloud *out_point_cloud) {
     last_status_ = decoder_.DecodeFromBuffer(in_buffer, out_point_cloud);
     return &last_status_;
+}
+
+float FileHelper::WriteFile(draco::DecoderBuffer *buffer, const char *filename) {
+    std::ofstream outfile (filename, std::ofstream::binary);
+    outfile.write((char*)buffer->data_head(), buffer->remaining_size());
+
+    std::streampos size = outfile.tellg();
+
+    outfile.close();
+
+    EM_ASM(
+        FS.syncfs(function (err) {
+            assert(!err);
+        });
+    );
+
+    return size;
+}
+
+float FileHelper::ReadFile(const char *filename, DracoUInt8Array *out_values) {
+    std::ifstream file (filename, std::ifstream::binary);
+
+    file.seekg (0, file.beg);
+    std::streampos size = file.tellg();
+
+    char *memblock = new char [size];
+
+    file.seekg (0, file.beg);
+    file.read (memblock, size);
+
+    file.close();
+
+    out_values->SetValues((const uint8_t*)memblock, size);
+    return size;
+}
+
+bool FileHelper::RemoveFile(const char *filename) {
+    return false;
 }

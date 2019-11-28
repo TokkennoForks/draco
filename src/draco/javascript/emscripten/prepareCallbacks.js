@@ -36,3 +36,11 @@ Module['onModuleParsed'] = function() {
     }
   }
 };
+
+Module['preRun'] = function() {
+  console.log('fs prerun');
+  FS.mkdir("/work");
+  FS.chdir("/work");
+};
+
+Module['FS'] = FS;
