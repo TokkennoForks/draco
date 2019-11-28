@@ -52,6 +52,7 @@ option(ENABLE_WEXTRA "" OFF)
 option(IGNORE_EMPTY_BUILD_TYPE "" OFF)
 option(BUILD_UNITY_PLUGIN "Build plugin library for Unity." OFF)
 option(BUILD_ANIMATION_ENCODING "" OFF)
+option(BUILD_CONVERTER "" OFF)
 option(BUILD_FOR_GLTF "" OFF)
 option(BUILD_MAYA_PLUGIN "Build plugin library for Maya." OFF)
 option(BUILD_USD_PLUGIN "Build plugin library for USD." OFF)
@@ -597,12 +598,16 @@ set(draco_animation_dec_sources
     "${draco_src_root}/animation/keyframe_animation_decoder.h")
 
 set(draco_js_dec_sources
-    "${draco_src_root}/javascript/emscripten/decoder_webidl_wrapper.cc"
-    "${draco_src_root}/javascript/emscripten/draco_decoder_glue_wrapper.cc")
+        "${draco_src_root}/javascript/emscripten/decoder_webidl_wrapper.cc"
+        "${draco_src_root}/javascript/emscripten/draco_decoder_glue_wrapper.cc")
 
 set(draco_js_enc_sources
-    "${draco_src_root}/javascript/emscripten/draco_encoder_glue_wrapper.cc"
-    "${draco_src_root}/javascript/emscripten/encoder_webidl_wrapper.cc")
+        "${draco_src_root}/javascript/emscripten/encoder_webidl_wrapper.cc"
+        "${draco_src_root}/javascript/emscripten/draco_encoder_glue_wrapper.cc")
+
+set(draco_js_cnv_sources
+    "${draco_src_root}/javascript/emscripten/draco_converter_glue_wrapper.cc"
+    "${draco_src_root}/javascript/emscripten/converter_webidl_wrapper.cc")
 
 set(
   draco_animation_js_dec_sources
@@ -698,7 +703,9 @@ if(EMSCRIPTEN AND ENABLE_JS_GLUE)
   set(draco_js_dec_idl
       "${draco_src_root}/javascript/emscripten/draco_web_decoder.idl")
   set(draco_js_enc_idl
-      "${draco_src_root}/javascript/emscripten/draco_web_encoder.idl")
+          "${draco_src_root}/javascript/emscripten/draco_web_encoder.idl")
+  set(draco_js_cnv_idl
+          "${draco_src_root}/javascript/emscripten/draco_web_converter.idl")
   set(draco_animation_js_dec_idl
       "${draco_src_root}/javascript/emscripten/draco_animation_web_decoder.idl")
   set(draco_animation_js_enc_idl
@@ -717,6 +724,15 @@ if(EMSCRIPTEN AND ENABLE_JS_GLUE)
   if(NOT EXISTS "${draco_build_dir}/glue_decoder.cpp"
      OR NOT EXISTS "${draco_build_dir}/glue_encoder.cpp")
     message(FATAL_ERROR "Glue generation failed.")
+  endif()
+
+  if(BUILD_CONVERTER)
+    execute_process(COMMAND ${PYTHON_EXECUTABLE}
+            $ENV{EMSCRIPTEN}/tools/webidl_binder.py
+            ${draco_js_cnv_idl} ${draco_build_dir}/glue_converter)
+    if(NOT EXISTS "${draco_build_dir}/glue_converter.cpp")
+      message(FATAL_ERROR "Glue generation failed.")
+    endif()
   endif()
 
   if(BUILD_ANIMATION_ENCODING)
@@ -753,6 +769,17 @@ if(EMSCRIPTEN AND ENABLE_JS_GLUE)
                      COMMENT "Generating ${draco_build_dir}/glue_encoder.cpp."
                      WORKING_DIRECTORY ${draco_build_dir}
                      VERBATIM)
+
+  if(BUILD_CONVERTER)
+    add_custom_command(OUTPUT ${draco_build_dir}/glue_converter.cpp
+            COMMAND ${PYTHON_EXECUTABLE}
+            $ENV{EMSCRIPTEN}/tools/webidl_binder.py
+            ${draco_js_cnv_idl} ${draco_build_dir}/glue_converter
+            DEPENDS ${draco_js_cnv_idl}
+            COMMENT "Generating ${draco_build_dir}/glue_converter.cpp."
+            WORKING_DIRECTORY ${draco_build_dir}
+            VERBATIM)
+  endif()
 
   if(BUILD_ANIMATION_ENCODING)
     add_custom_command(
@@ -815,6 +842,28 @@ if(EMSCRIPTEN AND ENABLE_JS_GLUE)
       ${draco_points_enc_sources}
       ${draco_version_sources})
 
+  if(BUILD_CONVERTER)
+    set(draco_converter_src
+            ${draco_attributes_sources}
+            ${draco_compression_attributes_enc_sources}
+            ${draco_compression_attributes_pred_schemes_enc_sources}
+            ${draco_compression_bit_coders_sources}
+            ${draco_compression_encode_sources}
+            ${draco_compression_entropy_sources}
+            ${draco_compression_mesh_traverser_sources}
+            ${draco_compression_mesh_enc_sources}
+            ${draco_compression_point_cloud_enc_sources}
+            ${draco_core_sources}
+            ${draco_enc_config_sources}
+            ${draco_io_sources}
+            ${draco_mesh_sources}
+            ${draco_metadata_enc_sources}
+            ${draco_metadata_sources}
+            ${draco_point_cloud_sources}
+            ${draco_points_enc_sources}
+            ${draco_version_sources})
+  endif()
+
   add_executable(draco_decoder ${draco_js_dec_sources} ${draco_decoder_src})
   append_link_flag_to_target(draco_decoder
                              "-s EXPORT_NAME=\"'DracoDecoderModule'\"")
@@ -823,10 +872,23 @@ if(EMSCRIPTEN AND ENABLE_JS_GLUE)
   append_link_flag_to_target(draco_encoder
                              "-s EXPORT_NAME=\"'DracoEncoderModule'\"")
 
+  if(BUILD_CONVERTER)
+    add_executable(draco_converter ${draco_js_cnv_sources} ${draco_converter_src})
+    append_link_flag_to_target(draco_converter
+            "-s EXPORT_NAME=\"'DracoConverterModule'\" -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s FORCE_FILESYSTEM=1")
+  endif()
+
   draco_enable_feature(FEATURE DRACO_ATTRIBUTE_INDICES_DEDUPLICATION_SUPPORTED
                        TARGETS draco_encoder)
   draco_enable_feature(FEATURE DRACO_ATTRIBUTE_VALUES_DEDUPLICATION_SUPPORTED
                        TARGETS draco_encoder)
+
+  if(BUILD_CONVERTER)
+    draco_enable_feature(FEATURE DRACO_ATTRIBUTE_INDICES_DEDUPLICATION_SUPPORTED
+            TARGETS draco_converter)
+    draco_enable_feature(FEATURE DRACO_ATTRIBUTE_VALUES_DEDUPLICATION_SUPPORTED
+            TARGETS draco_converter)
+  endif()
   if(ENABLE_DECODER_ATTRIBUTE_DEDUPLICATION)
     draco_enable_feature(FEATURE DRACO_ATTRIBUTE_INDICES_DEDUPLICATION_SUPPORTED
                          TARGETS draco_decoder)
@@ -852,6 +914,17 @@ if(EMSCRIPTEN AND ENABLE_JS_GLUE)
                  "${draco_src_root}/javascript/emscripten/version.js")
   em_link_post_js(draco_encoder "${draco_build_dir}/glue_encoder.js"
                   "${draco_src_root}/javascript/emscripten/finalize.js")
+
+  if(BUILD_CONVERTER)
+    set_property(SOURCE ${draco_js_cnv_sources}
+            APPEND
+            PROPERTY OBJECT_DEPENDS ${draco_build_dir}/glue_converter.cpp)
+    em_link_pre_js(draco_converter
+            "${draco_src_root}/javascript/emscripten/prepareCallbacks.js"
+            "${draco_src_root}/javascript/emscripten/version.js")
+    em_link_post_js(draco_converter "${draco_build_dir}/glue_converter.js"
+            "${draco_src_root}/javascript/emscripten/finalize.js")
+  endif()
 
   if(BUILD_ANIMATION_ENCODING)
     add_executable(draco_animation_decoder ${draco_animation_dec_sources}
