@@ -378,9 +378,25 @@ interface Decoder {
 
 // Format converter
 
+interface EncoderOptions {
+    void EncoderOptions();
+    long get_pos_quantization_bits();
+    long get_tex_coords_quantization_bits();
+    long get_normals_quantization_bits();
+    long get_generic_quantization_bits();
+    long get_compression_level();
+    boolean get_use_metadata();
+    void set_pos_quantization_bits(long b);
+    void set_tex_coords_quantization_bits(long b);
+    void set_normals_quantization_bits(long b);
+    void set_generic_quantization_bits(long b);
+    void set_compression_level(long cl);
+    void set_use_metadata(boolean metadata);
+};
+
 interface ObjDecoder {
   void ObjDecoder();
-  [Const] Status ConvertMesh([Const] DOMString inFile, [Const] DOMString outFile);
+  [Const] Status ConvertMesh([Const] DOMString inFile, [Const] DOMString outFile, EncoderOptions options);
   [Const] Status DecodeMeshFromFile([Const] DOMString filename, Mesh out_mesh);
   [Const] Status DecodePointCloudFromFile([Const] DOMString filename, PointCloud out_point_cloud);
   [Const] Status DecodeMeshFromBuffer(DecoderBuffer buffer, Mesh out_mesh);

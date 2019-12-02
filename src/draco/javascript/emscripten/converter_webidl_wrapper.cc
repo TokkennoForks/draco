@@ -547,24 +547,25 @@ const Metadata *Decoder::GetAttributeMetadata(const PointCloud &pc,
     return pc.GetAttributeMetadataByAttributeId(att_id);
 }
 
-const draco::Status *ObjDecoder::ConvertMesh(const char *inFile, const char *outFile) {
+const draco::Status *ObjDecoder::ConvertMesh(const char *inFile, const char *outFile, EncoderOptions *options) {
     std::string inFileStr(inFile);
     std::string outFileStr(outFile);
 
     draco::Mesh mesh;
 
-    decoder_.set_use_metadata(true);
+    decoder_.set_use_metadata(options->get_use_metadata());
     last_status_ = decoder_.DecodeFromFile(inFile, &mesh);
 
     if (!last_status_.ok())
         return &last_status_;
 
     draco::Encoder encoder;
-    encoder.SetAttributeQuantization(draco::GeometryAttribute::POSITION, 16);
-    encoder.SetAttributeQuantization(draco::GeometryAttribute::TEX_COORD, 16);
-    encoder.SetAttributeQuantization(draco::GeometryAttribute::NORMAL, 16);
-    encoder.SetAttributeQuantization(draco::GeometryAttribute::GENERIC, 16);
-    encoder.SetSpeedOptions(0, 0);
+    encoder.SetAttributeQuantization(draco::GeometryAttribute::POSITION, options->get_pos_quantization_bits());
+    encoder.SetAttributeQuantization(draco::GeometryAttribute::TEX_COORD, options->get_tex_coords_quantization_bits());
+    encoder.SetAttributeQuantization(draco::GeometryAttribute::NORMAL, options->get_normals_quantization_bits());
+    encoder.SetAttributeQuantization(draco::GeometryAttribute::GENERIC, options->get_generic_quantization_bits());
+    const int speed = 10 - options->get_compression_level();
+    encoder.SetSpeedOptions(speed, speed);
 
     draco::EncoderBuffer buffer;
     last_status_ = encoder.EncodeMeshToBuffer(mesh, &buffer);
