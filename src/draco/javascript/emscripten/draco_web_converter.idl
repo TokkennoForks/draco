@@ -380,6 +380,9 @@ interface Decoder {
 
 interface ObjDecoder {
   void ObjDecoder();
+  [Const] Status ConvertMesh([Const] DOMString inFile, [Const] DOMString outFile);
+  [Const] Status DecodeMeshFromFile([Const] DOMString filename, Mesh out_mesh);
+  [Const] Status DecodePointCloudFromFile([Const] DOMString filename, PointCloud out_point_cloud);
   [Const] Status DecodeMeshFromBuffer(DecoderBuffer buffer, Mesh out_mesh);
   [Const] Status DecodePointCloudFromBuffer(DecoderBuffer buffer, PointCloud out_point_cloud);
   void set_deduplicate_input_values(boolean v);

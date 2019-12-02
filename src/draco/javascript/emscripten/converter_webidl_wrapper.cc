@@ -29,62 +29,62 @@ MetadataBuilder::MetadataBuilder() {}
 
 bool MetadataBuilder::AddStringEntry(Metadata *metadata, const char *entry_name,
                                      const char *entry_value) {
-  if (!metadata)
-    return false;
-  const std::string name{entry_name};
-  const std::string value{entry_value};
-  metadata->AddEntryString(entry_name, entry_value);
-  return true;
+    if (!metadata)
+        return false;
+    const std::string name{entry_name};
+    const std::string value{entry_value};
+    metadata->AddEntryString(entry_name, entry_value);
+    return true;
 }
 
 bool MetadataBuilder::AddIntEntry(Metadata *metadata, const char *entry_name,
                                   long entry_value) {
-  if (!metadata)
-    return false;
-  const std::string name{entry_name};
-  metadata->AddEntryInt(name, entry_value);
-  return true;
+    if (!metadata)
+        return false;
+    const std::string name{entry_name};
+    metadata->AddEntryInt(name, entry_value);
+    return true;
 }
 
 bool MetadataBuilder::AddDoubleEntry(Metadata *metadata, const char *entry_name,
                                      double entry_value) {
-  if (!metadata)
-    return false;
-  const std::string name{entry_name};
-  metadata->AddEntryDouble(name, entry_value);
-  return true;
+    if (!metadata)
+        return false;
+    const std::string name{entry_name};
+    metadata->AddEntryDouble(name, entry_value);
+    return true;
 }
 
 int PointCloudBuilder::AddFloatAttribute(PointCloud *pc,
                                          draco_GeometryAttribute_Type type,
                                          long num_vertices, long num_components,
                                          const float *att_values) {
-  return AddAttribute(pc, type, num_vertices, num_components, att_values,
-                      draco::DT_FLOAT32);
+    return AddAttribute(pc, type, num_vertices, num_components, att_values,
+                        draco::DT_FLOAT32);
 }
 
 int PointCloudBuilder::AddInt8Attribute(PointCloud *pc,
                                         draco_GeometryAttribute_Type type,
                                         long num_vertices, long num_components,
                                         const char *att_values) {
-  return AddAttribute(pc, type, num_vertices, num_components, att_values,
-                      draco::DT_INT8);
+    return AddAttribute(pc, type, num_vertices, num_components, att_values,
+                        draco::DT_INT8);
 }
 
 int PointCloudBuilder::AddUInt8Attribute(PointCloud *pc,
                                          draco_GeometryAttribute_Type type,
                                          long num_vertices, long num_components,
                                          const uint8_t *att_values) {
-  return AddAttribute(pc, type, num_vertices, num_components, att_values,
-                      draco::DT_UINT8);
+    return AddAttribute(pc, type, num_vertices, num_components, att_values,
+                        draco::DT_UINT8);
 }
 
 int PointCloudBuilder::AddInt16Attribute(PointCloud *pc,
                                          draco_GeometryAttribute_Type type,
                                          long num_vertices, long num_components,
                                          const int16_t *att_values) {
-  return AddAttribute(pc, type, num_vertices, num_components, att_values,
-                      draco::DT_INT16);
+    return AddAttribute(pc, type, num_vertices, num_components, att_values,
+                        draco::DT_INT16);
 }
 
 int PointCloudBuilder::AddUInt16Attribute(PointCloud *pc,
@@ -92,16 +92,16 @@ int PointCloudBuilder::AddUInt16Attribute(PointCloud *pc,
                                           long num_vertices,
                                           long num_components,
                                           const uint16_t *att_values) {
-  return AddAttribute(pc, type, num_vertices, num_components, att_values,
-                      draco::DT_UINT16);
+    return AddAttribute(pc, type, num_vertices, num_components, att_values,
+                        draco::DT_UINT16);
 }
 
 int PointCloudBuilder::AddInt32Attribute(PointCloud *pc,
                                          draco_GeometryAttribute_Type type,
                                          long num_vertices, long num_components,
                                          const int32_t *att_values) {
-  return AddAttribute(pc, type, num_vertices, num_components, att_values,
-                      draco::DT_INT32);
+    return AddAttribute(pc, type, num_vertices, num_components, att_values,
+                        draco::DT_INT32);
 }
 
 int PointCloudBuilder::AddUInt32Attribute(PointCloud *pc,
@@ -109,175 +109,175 @@ int PointCloudBuilder::AddUInt32Attribute(PointCloud *pc,
                                           long num_vertices,
                                           long num_components,
                                           const uint32_t *att_values) {
-  return AddAttribute(pc, type, num_vertices, num_components, att_values,
-                      draco::DT_UINT32);
+    return AddAttribute(pc, type, num_vertices, num_components, att_values,
+                        draco::DT_UINT32);
 }
 
 bool PointCloudBuilder::AddMetadata(PointCloud *pc, const Metadata *metadata) {
-  if (!pc)
-    return false;
-  // Not allow write over metadata.
-  if (pc->metadata())
-    return false;
-  std::unique_ptr<draco::GeometryMetadata> new_metadata =
-      std::unique_ptr<draco::GeometryMetadata>(
-          new draco::GeometryMetadata(*metadata));
-  pc->AddMetadata(std::move(new_metadata));
-  return true;
+    if (!pc)
+        return false;
+    // Not allow write over metadata.
+    if (pc->metadata())
+        return false;
+    std::unique_ptr<draco::GeometryMetadata> new_metadata =
+            std::unique_ptr<draco::GeometryMetadata>(
+                    new draco::GeometryMetadata(*metadata));
+    pc->AddMetadata(std::move(new_metadata));
+    return true;
 }
 
 bool PointCloudBuilder::SetMetadataForAttribute(PointCloud *pc,
                                                 long attribute_id,
                                                 const Metadata *metadata) {
-  if (!pc)
-    return false;
-  // If empty metadata, just ignore.
-  if (!metadata)
-    return false;
-  if (attribute_id < 0 || attribute_id >= pc->num_attributes())
-    return false;
+    if (!pc)
+        return false;
+    // If empty metadata, just ignore.
+    if (!metadata)
+        return false;
+    if (attribute_id < 0 || attribute_id >= pc->num_attributes())
+        return false;
 
-  if (!pc->metadata()) {
-    std::unique_ptr<draco::GeometryMetadata> geometry_metadata =
-        std::unique_ptr<draco::GeometryMetadata>(new draco::GeometryMetadata());
-    pc->AddMetadata(std::move(geometry_metadata));
-  }
+    if (!pc->metadata()) {
+        std::unique_ptr<draco::GeometryMetadata> geometry_metadata =
+                std::unique_ptr<draco::GeometryMetadata>(new draco::GeometryMetadata());
+        pc->AddMetadata(std::move(geometry_metadata));
+    }
 
-  // Get unique attribute id for the attribute.
-  const long unique_id = pc->attribute(attribute_id)->unique_id();
+    // Get unique attribute id for the attribute.
+    const long unique_id = pc->attribute(attribute_id)->unique_id();
 
-  std::unique_ptr<draco::AttributeMetadata> att_metadata =
-      std::unique_ptr<draco::AttributeMetadata>(
-          new draco::AttributeMetadata(*metadata));
-  att_metadata->set_att_unique_id(unique_id);
-  pc->metadata()->AddAttributeMetadata(std::move(att_metadata));
-  return true;
+    std::unique_ptr<draco::AttributeMetadata> att_metadata =
+            std::unique_ptr<draco::AttributeMetadata>(
+                    new draco::AttributeMetadata(*metadata));
+    att_metadata->set_att_unique_id(unique_id);
+    pc->metadata()->AddAttributeMetadata(std::move(att_metadata));
+    return true;
 }
 
 MeshBuilder::MeshBuilder() {}
 
 bool MeshBuilder::AddFacesToMesh(Mesh *mesh, long num_faces, const int *faces) {
-  if (!mesh)
-    return false;
-  mesh->SetNumFaces(num_faces);
-  for (draco::FaceIndex i(0); i < num_faces; ++i) {
-    draco::Mesh::Face face;
-    face[0] = faces[i.value() * 3];
-    face[1] = faces[i.value() * 3 + 1];
-    face[2] = faces[i.value() * 3 + 2];
-    mesh->SetFace(i, face);
-  }
-  return true;
+    if (!mesh)
+        return false;
+    mesh->SetNumFaces(num_faces);
+    for (draco::FaceIndex i(0); i < num_faces; ++i) {
+        draco::Mesh::Face face;
+        face[0] = faces[i.value() * 3];
+        face[1] = faces[i.value() * 3 + 1];
+        face[2] = faces[i.value() * 3 + 2];
+        mesh->SetFace(i, face);
+    }
+    return true;
 }
 
 int MeshBuilder::AddFloatAttributeToMesh(Mesh *mesh,
                                          draco_GeometryAttribute_Type type,
                                          long num_vertices, long num_components,
                                          const float *att_values) {
-  return AddFloatAttribute(mesh, type, num_vertices, num_components,
-                           att_values);
+    return AddFloatAttribute(mesh, type, num_vertices, num_components,
+                             att_values);
 }
 
 int MeshBuilder::AddInt32AttributeToMesh(draco::Mesh *mesh,
                                          draco_GeometryAttribute_Type type,
                                          long num_vertices, long num_components,
                                          const int32_t *att_values) {
-  return AddInt32Attribute(mesh, type, num_vertices, num_components,
-                           att_values);
+    return AddInt32Attribute(mesh, type, num_vertices, num_components,
+                             att_values);
 }
 
 bool MeshBuilder::AddMetadataToMesh(Mesh *mesh, const Metadata *metadata) {
-  return AddMetadata(mesh, metadata);
+    return AddMetadata(mesh, metadata);
 }
 
 Encoder::Encoder() {}
 
 void Encoder::SetEncodingMethod(long method) {
-  encoder_.SetEncodingMethod(method);
+    encoder_.SetEncodingMethod(method);
 }
 
 void Encoder::SetAttributeQuantization(draco_GeometryAttribute_Type type,
                                        long quantization_bits) {
-  encoder_.SetAttributeQuantization(type, quantization_bits);
+    encoder_.SetAttributeQuantization(type, quantization_bits);
 }
 
 void Encoder::SetAttributeExplicitQuantization(
-    draco_GeometryAttribute_Type type, long quantization_bits,
-    long num_components, const float *origin, float range) {
-  encoder_.SetAttributeExplicitQuantization(type, quantization_bits,
-                                            num_components, origin, range);
+        draco_GeometryAttribute_Type type, long quantization_bits,
+        long num_components, const float *origin, float range) {
+    encoder_.SetAttributeExplicitQuantization(type, quantization_bits,
+                                              num_components, origin, range);
 }
 
 void Encoder::SetSpeedOptions(long encoding_speed, long decoding_speed) {
-  encoder_.SetSpeedOptions(encoding_speed, decoding_speed);
+    encoder_.SetSpeedOptions(encoding_speed, decoding_speed);
 }
 
 void Encoder::SetTrackEncodedProperties(bool flag) {
-  encoder_.SetTrackEncodedProperties(flag);
+    encoder_.SetTrackEncodedProperties(flag);
 }
 
 int Encoder::EncodeMeshToDracoBuffer(Mesh *mesh, DracoInt8Array *draco_buffer) {
-  if (!mesh)
-    return 0;
-  draco::EncoderBuffer buffer;
-  if (mesh->GetNamedAttributeId(draco::GeometryAttribute::POSITION) == -1)
-    return 0;
-  if (!mesh->DeduplicateAttributeValues())
-    return 0;
-  mesh->DeduplicatePointIds();
-  if (!encoder_.EncodeMeshToBuffer(*mesh, &buffer).ok()) {
-    return 0;
-  }
-  draco_buffer->SetValues((const signed char *)buffer.data(), buffer.size());
-  return buffer.size();
+    if (!mesh)
+        return 0;
+    draco::EncoderBuffer buffer;
+    if (mesh->GetNamedAttributeId(draco::GeometryAttribute::POSITION) == -1)
+        return 0;
+    if (!mesh->DeduplicateAttributeValues())
+        return 0;
+    mesh->DeduplicatePointIds();
+    if (!encoder_.EncodeMeshToBuffer(*mesh, &buffer).ok()) {
+        return 0;
+    }
+    draco_buffer->SetValues((const signed char *) buffer.data(), buffer.size());
+    return buffer.size();
 }
 
 int Encoder::EncodePointCloudToDracoBuffer(draco::PointCloud *pc,
                                            bool deduplicate_values,
                                            DracoInt8Array *draco_buffer) {
-  // TODO(ostava): Refactor common functionality with EncodeMeshToDracoBuffer().
-  if (!pc)
-    return 0;
-  draco::EncoderBuffer buffer;
-  if (pc->GetNamedAttributeId(draco::GeometryAttribute::POSITION) == -1)
-    return 0;
-  if (deduplicate_values) {
-    if (!pc->DeduplicateAttributeValues())
-      return 0;
-    pc->DeduplicatePointIds();
-  }
-  if (!encoder_.EncodePointCloudToBuffer(*pc, &buffer).ok()) {
-    return 0;
-  }
-  draco_buffer->SetValues((const signed char *)buffer.data(), buffer.size());
-  return buffer.size();
+    // TODO(ostava): Refactor common functionality with EncodeMeshToDracoBuffer().
+    if (!pc)
+        return 0;
+    draco::EncoderBuffer buffer;
+    if (pc->GetNamedAttributeId(draco::GeometryAttribute::POSITION) == -1)
+        return 0;
+    if (deduplicate_values) {
+        if (!pc->DeduplicateAttributeValues())
+            return 0;
+        pc->DeduplicatePointIds();
+    }
+    if (!encoder_.EncodePointCloudToBuffer(*pc, &buffer).ok()) {
+        return 0;
+    }
+    draco_buffer->SetValues((const signed char *) buffer.data(), buffer.size());
+    return buffer.size();
 }
 
 int Encoder::GetNumberOfEncodedPoints() {
-  return encoder_.num_encoded_points();
+    return encoder_.num_encoded_points();
 }
 
 int Encoder::GetNumberOfEncodedFaces() { return encoder_.num_encoded_faces(); }
 
 ExpertEncoder::ExpertEncoder(PointCloud *pc) : pc_(pc) {
-  // Web-IDL interface does not support constructor overloading so instead we
-  // use RTTI to determine whether the input is a mesh or a point cloud.
-  Mesh *mesh = dynamic_cast<Mesh *>(pc);
-  if (mesh)
-    encoder_ =
-        std::unique_ptr<draco::ExpertEncoder>(new draco::ExpertEncoder(*mesh));
-  else
-    encoder_ =
-        std::unique_ptr<draco::ExpertEncoder>(new draco::ExpertEncoder(*pc));
+    // Web-IDL interface does not support constructor overloading so instead we
+    // use RTTI to determine whether the input is a mesh or a point cloud.
+    Mesh *mesh = dynamic_cast<Mesh *>(pc);
+    if (mesh)
+        encoder_ =
+                std::unique_ptr<draco::ExpertEncoder>(new draco::ExpertEncoder(*mesh));
+    else
+        encoder_ =
+                std::unique_ptr<draco::ExpertEncoder>(new draco::ExpertEncoder(*pc));
 }
 
 void ExpertEncoder::SetEncodingMethod(long method) {
-  encoder_->SetEncodingMethod(method);
+    encoder_->SetEncodingMethod(method);
 }
 
 void ExpertEncoder::SetAttributeQuantization(long att_id,
                                              long quantization_bits) {
-  encoder_->SetAttributeQuantization(att_id, quantization_bits);
+    encoder_->SetAttributeQuantization(att_id, quantization_bits);
 }
 
 void ExpertEncoder::SetAttributeExplicitQuantization(long att_id,
@@ -285,42 +285,42 @@ void ExpertEncoder::SetAttributeExplicitQuantization(long att_id,
                                                      long num_components,
                                                      const float *origin,
                                                      float range) {
-  encoder_->SetAttributeExplicitQuantization(att_id, quantization_bits,
-                                             num_components, origin, range);
+    encoder_->SetAttributeExplicitQuantization(att_id, quantization_bits,
+                                               num_components, origin, range);
 }
 
 void ExpertEncoder::SetSpeedOptions(long encoding_speed, long decoding_speed) {
-  encoder_->SetSpeedOptions(encoding_speed, decoding_speed);
+    encoder_->SetSpeedOptions(encoding_speed, decoding_speed);
 }
 
 void ExpertEncoder::SetTrackEncodedProperties(bool flag) {
-  encoder_->SetTrackEncodedProperties(flag);
+    encoder_->SetTrackEncodedProperties(flag);
 }
 
 int ExpertEncoder::EncodeToDracoBuffer(bool deduplicate_values,
                                        DracoInt8Array *draco_buffer) {
-  if (!pc_)
-    return 0;
-  if (deduplicate_values) {
-    if (!pc_->DeduplicateAttributeValues())
-      return 0;
-    pc_->DeduplicatePointIds();
-  }
+    if (!pc_)
+        return 0;
+    if (deduplicate_values) {
+        if (!pc_->DeduplicateAttributeValues())
+            return 0;
+        pc_->DeduplicatePointIds();
+    }
 
-  draco::EncoderBuffer buffer;
-  if (!encoder_->EncodeToBuffer(&buffer).ok()) {
-    return 0;
-  }
-  draco_buffer->SetValues((const signed char *)buffer.data(), buffer.size());
-  return buffer.size();
+    draco::EncoderBuffer buffer;
+    if (!encoder_->EncodeToBuffer(&buffer).ok()) {
+        return 0;
+    }
+    draco_buffer->SetValues((const signed char *) buffer.data(), buffer.size());
+    return buffer.size();
 }
 
 int ExpertEncoder::GetNumberOfEncodedPoints() {
-  return encoder_->num_encoded_points();
+    return encoder_->num_encoded_points();
 }
 
 int ExpertEncoder::GetNumberOfEncodedFaces() {
-  return encoder_->num_encoded_faces();
+    return encoder_->num_encoded_faces();
 }
 
 MetadataQuerier::MetadataQuerier() : entry_names_metadata_(nullptr) {}
@@ -547,50 +547,60 @@ const Metadata *Decoder::GetAttributeMetadata(const PointCloud &pc,
     return pc.GetAttributeMetadataByAttributeId(att_id);
 }
 
+const draco::Status *ObjDecoder::ConvertMesh(const char *inFile, const char *outFile) {
+    std::string inFileStr(inFile);
+    std::string outFileStr(outFile);
+
+    draco::Mesh mesh;
+
+    decoder_.set_use_metadata(true);
+    last_status_ = decoder_.DecodeFromFile(inFile, &mesh);
+
+    if (!last_status_.ok())
+        return &last_status_;
+
+    draco::Encoder encoder;
+    encoder.SetAttributeQuantization(draco::GeometryAttribute::POSITION, 16);
+    encoder.SetAttributeQuantization(draco::GeometryAttribute::TEX_COORD, 16);
+    encoder.SetAttributeQuantization(draco::GeometryAttribute::NORMAL, 16);
+    encoder.SetAttributeQuantization(draco::GeometryAttribute::GENERIC, 16);
+    encoder.SetSpeedOptions(0, 0);
+
+    draco::EncoderBuffer buffer;
+    last_status_ = encoder.EncodeMeshToBuffer(mesh, &buffer);
+
+    if (!last_status_.ok())
+        return &last_status_;
+
+    std::ofstream out_file(outFileStr, std::ios::binary);
+    if (!out_file) {
+        last_status_ = Status(Status::DRACO_ERROR, "Failed to create the output file.\n");
+        return &last_status_;
+    }
+    out_file.write(buffer.data(), buffer.size());
+
+    return &last_status_;
+}
+
+const draco::Status *ObjDecoder::DecodeMeshFromFile(const char *filename, draco::Mesh *out_mesh) {
+    std::string filenameCnv(filename);
+    last_status_ = decoder_.DecodeFromFile(filenameCnv, out_mesh);
+    return &last_status_;
+}
+
+const draco::Status *ObjDecoder::DecodePointCloudFromFile(const char *filename, draco::PointCloud *out_point_cloud) {
+    std::string filenameCnv(filename);
+    last_status_ = decoder_.DecodeFromFile(filenameCnv, out_point_cloud);
+    return &last_status_;
+}
+
 const draco::Status *ObjDecoder::DecodeMeshFromBuffer(draco::DecoderBuffer *in_buffer, draco::Mesh *out_mesh) {
     last_status_ = decoder_.DecodeFromBuffer(in_buffer, out_mesh);
     return &last_status_;
 }
 
-const draco::Status *ObjDecoder::DecodePointCloudFromBuffer(draco::DecoderBuffer *in_buffer, draco::PointCloud *out_point_cloud) {
+const draco::Status *
+ObjDecoder::DecodePointCloudFromBuffer(draco::DecoderBuffer *in_buffer, draco::PointCloud *out_point_cloud) {
     last_status_ = decoder_.DecodeFromBuffer(in_buffer, out_point_cloud);
     return &last_status_;
-}
-
-float FileHelper::WriteFile(draco::DecoderBuffer *buffer, const char *filename) {
-    std::ofstream outfile (filename, std::ofstream::binary);
-    outfile.write((char*)buffer->data_head(), buffer->remaining_size());
-
-    std::streampos size = outfile.tellg();
-
-    outfile.close();
-
-    EM_ASM(
-        FS.syncfs(function (err) {
-            assert(!err);
-        });
-    );
-
-    return size;
-}
-
-float FileHelper::ReadFile(const char *filename, DracoUInt8Array *out_values) {
-    std::ifstream file (filename, std::ifstream::binary);
-
-    file.seekg (0, file.beg);
-    std::streampos size = file.tellg();
-
-    char *memblock = new char [size];
-
-    file.seekg (0, file.beg);
-    file.read (memblock, size);
-
-    file.close();
-
-    out_values->SetValues((const uint8_t*)memblock, size);
-    return size;
-}
-
-bool FileHelper::RemoveFile(const char *filename) {
-    return false;
 }
