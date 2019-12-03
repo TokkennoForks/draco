@@ -31,10 +31,10 @@ void DecoderBuffer::Init(const char *data, size_t data_size) {
 }
 
 void DecoderBuffer::Init(const char *data, size_t data_size, uint16_t version) {
-  data_ = data;
-  data_size_ = data_size;
-  bitstream_version_ = version;
-  pos_ = 0;
+    data_ = data;
+    data_size_ = data_size;
+    bitstream_version_ = version;
+    pos_ = 0;
 }
 
 bool DecoderBuffer::StartBitDecoding(bool decode_size, uint64_t *out_size) {

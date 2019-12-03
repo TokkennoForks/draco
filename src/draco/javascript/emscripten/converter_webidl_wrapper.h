@@ -39,19 +39,35 @@ typedef draco::Status draco_Status;
 typedef draco::Status::Code draco_StatusCode;
 
 struct EncoderOptions {
-    EncoderOptions();
+    EncoderOptions() :
+            pos_quantization_bits(14),
+            tex_coords_quantization_bits(12),
+            normals_quantization_bits(10),
+            generic_quantization_bits(8),
+            use_metadata(true) {}
 
     int get_pos_quantization_bits() { return this->pos_quantization_bits; }
+
     int get_tex_coords_quantization_bits() { return this->tex_coords_quantization_bits; }
+
     int get_normals_quantization_bits() { return this->normals_quantization_bits; }
+
     int get_generic_quantization_bits() { return this->generic_quantization_bits; }
+
     int get_compression_level() { return this->compression_level; }
+
     bool get_use_metadata() { return this->use_metadata; }
+
     void set_pos_quantization_bits(int b) { this->pos_quantization_bits = b; }
+
     void set_tex_coords_quantization_bits(int b) { this->tex_coords_quantization_bits = b; }
+
     void set_normals_quantization_bits(int b) { this->normals_quantization_bits = b; }
+
     void set_generic_quantization_bits(int b) { this->generic_quantization_bits = b; }
+
     void set_compression_level(int cl) { this->compression_level = cl; }
+
     void set_use_metadata(bool metadata) { this->use_metadata = metadata; }
 
 private:
